@@ -5,5 +5,5 @@ open Week1Exercises
 
 [<EntryPoint>]
 let main argv =
-    Week1Exercises.VendingMachine
+    Week1Exercises.go
     0 // return an integer exit code
