@@ -1,0 +1,94 @@
+// Open the file that defines the type "expr" we shall use as AST
+%{
+open AST
+%}
+
+// Declare the tokens (terminal symbols)
+%token <float> NUM
+%token <string> STRING
+%token TIMES DIV PLUS MINUS POW LPAR RPAR AND ANDAND LSQ RSQ SEMI OR OROR NEGATE EQUAL GT LT ASSIGN ELSE TRUE FALSE PRODUCE SKIP IF FI DO OD EOF
+// NOTE: the actual formats of these tokens are defined in the lexer file
+//       as regular expressions
+
+// Specify precedence and associativity of operators
+// Precedence is given by the order (from low to high)
+%left PLUS MINUS
+%left TIMES DIV
+%right POW SEMI
+%left OR OROR
+%left AND ANDAND
+%left NEGATE
+
+
+// We declare the initial non-terminal symbol
+%start start
+
+// We specify the return type of each of then non-terminal symbols
+%type <cmd> start
+%type <arithmetic> arithmetic
+%type <bools> bools
+%type <cmd> cmd
+%type <guardedcmd> guardedcmd
+
+// Grammar productions
+%%
+
+// The first production in "formal" notation is
+// start -> expression
+// here written:
+start: cmd EOF             { $1 }
+
+// Note that we need to insert an End-Of-File (EOF)
+// The code annotation { $1 } specifies that parsing with this production
+// returns whatever parsing the expression returns: $1 is the result of parsing
+// the first component of the production (i.e. expression)
+
+// The productions for expressions are like in the grammar we saw in class
+// written in the yacc format:
+arithmetic:
+  | arithmetic TIMES arithmetic   { TimesExpr($1,$3) }
+  | arithmetic DIV arithmetic     { DivExpr($1,$3) }
+  | arithmetic PLUS arithmetic    { PlusExpr($1,$3) }
+  | arithmetic MINUS arithmetic   { MinusExpr($1,$3) }
+  | arithmetic POW arithmetic     { PowExpr($1,$3) }
+  | PLUS arithmetic               { UPlusExpr($2) }
+  | MINUS arithmetic              { UMinusExpr($2) }
+  | NUM                           { Num($1) }
+  | STRING						  { Str($1) }
+  | STRING LSQ arithmetic RSQ	  { ArrayAccess($1, $3) } 
+  | LPAR arithmetic RPAR          { $2 }
+
+bools: 
+	| TRUE						{ True }
+	| FALSE						{ False }
+	| bools AND bools			{ And($1, $3) }
+	| bools OR bools			{ Or($1, $3) }
+	| bools ANDAND bools		{ AndAnd($1, $3) }
+	| bools OROR bools			{ OrOr($1, $3) }
+	| NEGATE bools				{ Negate($2) }
+	| arithmetic EQUAL arithmetic			{ Equal($1, $3) }
+	| arithmetic NEGATE EQUAL arithmetic	{ NEqual($1, $4) }
+	| arithmetic GT arithmetic				{ Gt($1, $3) }
+	| arithmetic GT EQUAL arithmetic		{ Gte($1, $4) }
+	| arithmetic LT arithmetic				{ Lt($1, $3)}
+	| arithmetic LT EQUAL arithmetic		{ Lte($1, $4) }
+	| LPAR bools RPAR			{ $2 }
+
+cmd:
+	| STRING ASSIGN arithmetic						{ VarAssign($1, $3) }
+	| STRING LSQ arithmetic RSQ ASSIGN arithmetic	{ ArrayAssign($1, $3, $6) }
+	| SKIP											{ Skip }
+	| cmd SEMI cmd									{ Next($1, $3) }
+	| IF guardedcmd	FI								{ If($2) }
+	| DO guardedcmd OD								{ Do($2) }
+
+guardedcmd:
+	| bools PRODUCE cmd				{ Cond($1, $3) }
+	| guardedcmd ELSE guardedcmd	{ Else($1, $3) }
+
+// Again, the code annotation specifies the result of parsing
+// For example { TimesExpr($1,$3) } specifies that parsing with the production
+// returns the value TimesExpr($1,$3), where $i is the result of parsing
+// component i in the production (in this case the lhs and rhs operands)
+
+%%
