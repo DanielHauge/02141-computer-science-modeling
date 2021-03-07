@@ -1,6 +1,7 @@
 # Mandatory Assignment part 1.
 - Team 27 { Daniel F. Hauge - (s201186) }
 - Hand-in Date: 11/03/2021
+- Repository: https://github.com/DanielHauge/02141-computer-science-modeling
 
 ## Files
 - Parser.fsp : The parser file for fsyacc.exe
