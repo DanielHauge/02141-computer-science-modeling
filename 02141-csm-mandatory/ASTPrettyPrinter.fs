@@ -7,8 +7,6 @@ let indent i = (String.replicate i " ")
 
 let rec print_ast (ast:AST) i = 
 
-    
-
     let print_cmd cmd =
         match cmd with
         | VarAssign(s,a) -> ":=" + newline + (print_ast (S(s)) (i+1)) + newline + (print_ast (A(a)) (i+1))

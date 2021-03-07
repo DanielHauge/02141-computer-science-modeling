@@ -11,6 +11,7 @@ open AST
 [<EntryPoint>]
 let main argv =
 
+    // Parsing logic (Use lexer with parser to generate AST, if fail then hint with lexer position).
     let parse input =
         let lexbuf = LexBuffer<char>.FromString input
         let res = try Parser.start Lexer.tokenize lexbuf with e -> 
@@ -20,18 +21,23 @@ let main argv =
         res
 
 
-    let fileAsString = System.IO.File.ReadAllText "E:\\repo\\02141-computer-science-modeling\\02141-csm-mandatory\\test.gcl"
-
-    let gg = parse fileAsString
+    // Program logic. (Ask for filepath and parse content of file)
+    printf "Write filename:"
+    let fileName = (Console.ReadLine())
+    let newFile = fileName.Substring(0, fileName.Length-4) + ".ast"
+    let fileAsString = System.IO.File.ReadAllText fileName
     
-    let ast = print_ast (C(gg)) 0
-    
-    // http://jimblackler.net/treefun/
+    // Parse GCL program.
+    let ast = print_ast (C(parse fileAsString)) 0
+   
 
-    System.IO.File.WriteAllText("E:\\repo\\02141-computer-science-modeling\\02141-csm-mandatory\\test.ast", ast)
+    // Write the .ast file
+    System.IO.File.WriteAllText(newFile, ast)
 
-    printfn "http://jimblackler.net/treefun/"
-    Console.ReadKey()
+
+    printf "\n Program is accepted as a valid GCL program. The following output can be used at: http://jimblackler.net/treefun/ to generate a visual AST, it is also written to %s \n\n" newFile
+    printf "%s" ast
+    Console.ReadLine()
 
     0
 
