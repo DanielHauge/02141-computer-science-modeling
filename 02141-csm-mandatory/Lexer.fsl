@@ -15,7 +15,7 @@ let chars		= ['a'-'z']
 let charc		= ['A'-'Z']
 let char		= chars | charc
 let num         = digit+ ( '.' digit+)?  ('E' ('+'|'-')? digit+ )?
-let whitespace  = [' ' '\t']
+let whitespace  = [' ' '\t' '\n']
 let newline     = "\n\r" | '\n' | '\r'
 let string		= char+
 
@@ -53,9 +53,9 @@ rule tokenize = parse
 | '['			{ LSQ }
 | ']'			{ RSQ }
 | "skip"		{ SKIP }
-| "if "			{ IF }
-| " fi"			{ FI }
-| "do "			{ DO }
-| " od"			{ OD }
+| "if"+whitespace			{ IF }
+| whitespace+"fi"			{ FI }
+| "do"+whitespace			{ DO }
+| whitespace+"od"			{ OD }
 | string		{ STRING(LexBuffer<_>.LexemeString lexbuf) }
 | eof           { EOF }
