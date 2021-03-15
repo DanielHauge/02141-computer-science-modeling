@@ -67,8 +67,24 @@ let print_edge (edge:Edge) =
     let (a, ast, b) = edge
     sprintf "q%s -> q%s [%s]" (print_node a) (print_node b) (print_ast_expression ast)
 
+
+
 let rec print_program_graph (edges:ProgramGraph) : string list =
     match edges with
     | head::tail -> sprintf "%s" (print_edge head)::print_program_graph tail
     | _ -> []
+
+
+let format_edge_graphiz (edge:Edge) = 
+    let (a, ast, b) = edge
+    sprintf "q%s -> q%s [label= \"%s\"];" (print_node a) (print_node b) (print_ast_expression ast)
+
+let format_program_graph_graphiz (edges:ProgramGraph) : string =
+    
+    let rec format_edges (edges:ProgramGraph) : string =
+        match edges with
+        | head::tail -> sprintf "%s\n" (format_edge_graphiz head) + format_edges tail
+        | _ -> ""
+
+    sprintf "digraph program_graph {rankdir=LR;\nnode [shape = circle]; q0;\nnode [shape = doublecircle]; q#;\nnode [shape = circle]\n%s}" (format_edges edges)
 

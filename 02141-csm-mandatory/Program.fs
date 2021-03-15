@@ -41,17 +41,16 @@ let main argv =
 
     // Compiles program graph for ast
     let pg = compile_pg deterministic ast
-    let pgStr = print_program_graph pg
     let pgFileName = extensionLessFileName+".gv"
 
     // Write the .ast and .gv file
     System.IO.File.WriteAllText(astFileName, visualASTFormat)
-    System.IO.File.WriteAllText(pgFileName, (pgStr |> List.fold (fun a b -> a+"\n"+b) ""))
+    System.IO.File.WriteAllText(pgFileName, format_program_graph_graphiz pg)
 
     printf "\n Program is accepted as a valid GCL program. The following output can be used at: http://jimblackler.net/treefun/ to generate a visual AST, it is also written to %s \n\n" astFileName
     printf "%s\n" visualASTFormat
     printf "\nProgram graph edges:\n"
-    Seq.iter (fun x -> printfn "%s" x) pgStr
+    Seq.iter (fun x -> printfn "%s" x) (print_program_graph pg)
     
     printf "\n The edges are also written to: %s\n" pgFileName
 
