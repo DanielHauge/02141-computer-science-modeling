@@ -11,6 +11,8 @@
     <Compile Include="PGCompiler.fs" />
     <Compile Include="PGPrinter.fs" />
     <Compile Include="ASTPrettyPrinter.fs" />
+    <Compile Include="PGEvaluator.fs" />
+    <Compile Include="PGIntepreter.fs" />
     <Compile Include="Parser.fs" />
     <Compile Include="Lexer.fs" />
     <None Include="buildpg.sh" />
@@ -19,6 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="FsLexYacc" Version="10.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
   
 

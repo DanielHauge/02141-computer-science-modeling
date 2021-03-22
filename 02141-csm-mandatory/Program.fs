@@ -8,6 +8,8 @@ open ASTPrettyPrinter
 open AST
 open PGCompiler
 open PGPrinter
+open PGEvaluator
+open PGIntepreter
 
 
 [<EntryPoint>]
@@ -53,6 +55,17 @@ let main argv =
     Seq.iter (fun x -> printfn "%s" x) (print_program_graph pg)
     
     printf "\n The edges are also written to: %s\n" pgFileName
+
+    printf "\nInterpreting program with initial memory:"
+    let initMem = Newtonsoft.Json.JsonConvert.DeserializeObject<PGMemory> (System.IO.File.ReadAllText (extensionLessFileName+".mem"))
+    printfn "%s" (Newtonsoft.Json.JsonConvert.SerializeObject initMem)
+
+    let (executionSteps, status) = interpret_pg initMem pg
+    let (ast,node,mem) = if executionSteps.IsEmpty then (None,InitialNode,initMem) else executionSteps.Head
+    
+    printfn "Status: %A\nNode: %s\nLast action:%s\nFinal Memory:%s\n\n" status (print_node node) (match ast with | Some(a) -> print_ast_expression a | None -> "N/A") (Newtonsoft.Json.JsonConvert.SerializeObject mem)
+    Seq.iter (fun es-> printfn "%s" (print_execution_step es) ) (List.rev executionSteps)
+
 
     Console.ReadLine()
 

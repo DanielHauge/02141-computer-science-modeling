@@ -76,6 +76,8 @@ let rec compile_pg_det_rec (n1:Node) (n2:Node) (ast:AST) : ProgramGraph =
     | B(_) -> failwith "cannot compile boolean expression to anything meningful, should have been part of expression on the edge"
 
     
-let compile_pg (det:bool) (ast:AST) : ProgramGraph = if det then compile_pg_det_rec (I(0)) (F("#")) ast else  compile_pg_rec (I(0)) (F("#")) ast
+let FinalNode = F("#")
+let InitialNode = I(0)
+let compile_pg (det:bool) (ast:AST) : ProgramGraph = if det then compile_pg_det_rec (InitialNode) (FinalNode) ast else  compile_pg_rec (InitialNode) (FinalNode) ast
 
 

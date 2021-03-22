@@ -2,15 +2,9 @@ digraph program_graph {rankdir=LR;
 node [shape = circle]; q0;
 node [shape = doublecircle]; q#;
 node [shape = circle]
-q0 -> q1 [label= "i:=1"];
-q1 -> q8 [label= "(i<n)&(!(false))"];
-q2 -> q3 [label= "j:=i"];
-q3 -> q8 [label= "((j>0)&&(A[j-1]>A[j]))&(!(false))"];
-q5 -> q6 [label= "t:=A[j]"];
-q6 -> q7 [label= "A[j]:=A[j-1]"];
-q7 -> q8 [label= "A[j-1]:=t"];
-q8 -> q4 [label= "j:=j-1"];
-q3 -> q4 [label= "!((false)|((j>0)&&(A[j-1]>A[j])))"];
-q8 -> q# [label= "i:=i+1"];
-q1 -> q# [label= "!((false)|(i<n))"];
+q0 -> q1 [label= "y:=1"];
+q1 -> q2 [label= "x>0"];
+q2 -> q3 [label= "y:=x*y"];
+q3 -> q1 [label= "x:=x-1"];
+q1 -> q# [label= "!(x>0)"];
 }
