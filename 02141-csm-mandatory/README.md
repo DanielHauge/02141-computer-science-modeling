@@ -1,6 +1,6 @@
-# Mandatory Assignment part 1.
+# Mandatory Assignment part 3.
 - Team 27 { Daniel F. Hauge - (s201186) }
-- Hand-in Date: 11/03/2021
+- Hand-in Date: 8/04/2021
 - Repository: https://github.com/DanielHauge/02141-computer-science-modeling
 
 ## Files
@@ -13,6 +13,8 @@
 - buildpg.sh : A script file for building parser og lexer (used mostly for development)
 - PGCompiler : Contains type definitions and compilation code for the program graph
 - PGPrinter : Contains code to format program graph to string and graphiz format.
+- PGEvaluator : Contains code for evaluating expressions such as arithmetic expressions or boolean expressions, also command expressions etc.
+- PGInterpreter : Contains code for interpreting and running a program given a parsed program graph and initial memory.
 
 ## Parse a GCL program with application.
 - Have the GCL program in a file ending in ".gcl"
@@ -25,3 +27,8 @@ Parsing a GCL program will generate a file with the same name but with a ".ast" 
 
 ## Program Graph
 Parsing a GCL program will generate a file with the same name but with a ".gv" file extension. This file contains the program graph in graphviz format.
+
+## Interprete program (With stepwise execution)'
+- Have a program which can be parsed (see Parse a GCL program section)
+- Have initial memory file ending in ".mem" with the same name as the program being parsed and intepreted.
+- Parse a program will also interprete and print execution report and step wise execution.
