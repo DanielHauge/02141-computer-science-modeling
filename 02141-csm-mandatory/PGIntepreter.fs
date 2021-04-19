@@ -17,14 +17,12 @@ let rec tryFindNextExecution (aavailableEdgese:ProgramGraph) (mem:Mem) : Executi
         | _ -> None
 
 let interpret_pg (initialMem:Mem) (pg:ProgramGraph) : (ExecutionStep list*ProgramStatus) =
-
     let rec interpret_pg_rec (cur:Node) (mem:Mem) (acc:ExecutionStep list) : (ExecutionStep list*ProgramStatus) =
         if cur = FinalNode then (acc,Terminated) else
         let availableEdges = List.filter (fun (n1,_,_) -> n1=cur) pg
         match tryFindNextExecution availableEdges mem with
         | Some((ast,newNode,newMem)) -> interpret_pg_rec newNode newMem ((ast,newNode,newMem)::acc)
         | None -> (acc, Stuck)
-
     interpret_pg_rec InitialNode initialMem []
 
 let print_execution_step (es:ExecutionStep) : string =

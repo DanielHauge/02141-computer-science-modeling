@@ -13,6 +13,8 @@
     <Compile Include="ASTPrettyPrinter.fs" />
     <Compile Include="PGEvaluator.fs" />
     <Compile Include="PGIntepreter.fs" />
+    <Compile Include="SignEvaluator.fs" />
+    <Compile Include="SignAnalyser.fs" />
     <Compile Include="Parser.fs" />
     <Compile Include="Lexer.fs" />
     <None Include="buildpg.sh" />
