@@ -6,9 +6,10 @@ open PGEvaluator
 type Var = string
 type SignA = PLUS | MINUS | ZERO
 type SignB = TT | FF
-type Signs = ASigns of Set<SignA> | BSigns of Set<SignB>
-type AbstractMem = Map<Var,Signs>
-type SignAnalysis = (Node * AbstractMem) list
+type Sign = ASign of SignA | BSign of SignB
+type Signs = Set<Sign>
+type AbstractMem = Map<Var,Signs> 
+type SignAnalysis = Map<Node,AbstractMem>
 
 
 let sign i : SignA = 
@@ -16,10 +17,16 @@ let sign i : SignA =
     elif (i < 0) then MINUS 
     else ZERO 
 
+let map_to_generic_asigns (a:Set<SignA>) : Signs = Set.map (fun v -> ASign(v) ) a
+let map_to_generic_bsigns (a:Set<SignB>) : Signs = Set.map (fun v -> BSign(v) ) a
+let bsigns_from_list (l:SignB list) : Signs = map_to_generic_bsigns (Set.ofList l)
+let asigns_from_list (l:SignA list) : Signs = map_to_generic_asigns (Set.ofList l)
+
 // SIGN ARITHMETIC ANALYSIS
 
+
 let sign_add (s1:SignA) (s2:SignA) : Signs =
-    ASigns(
+    map_to_generic_asigns (
         Set.ofList (
             match (s1,s2) with
             | (MINUS, MINUS) -> [MINUS]
@@ -31,11 +38,10 @@ let sign_add (s1:SignA) (s2:SignA) : Signs =
             | (PLUS, MINUS) -> [MINUS; ZERO;PLUS]
             | (PLUS, ZERO) -> [PLUS]
             | (PLUS, PLUS) -> [PLUS] 
-            | _ -> failwith "does not expect boolean signs in arithmetic comparisions"
      ))
 
 let sign_sub (s1:SignA) (s2:SignA) : Signs =
-    ASigns(
+    map_to_generic_asigns(
         Set.ofList (
             match (s1,s2) with
             | (MINUS, MINUS) -> [MINUS;ZERO;PLUS]
@@ -47,11 +53,10 @@ let sign_sub (s1:SignA) (s2:SignA) : Signs =
             | (PLUS, MINUS) -> [PLUS]
             | (PLUS, ZERO) -> [PLUS]
             | (PLUS, PLUS) -> [PLUS; ZERO; MINUS] 
-            | _ -> failwith "does not expect boolean signs in arithmetic comparisions"
     ))
 
 let sign_times (s1:SignA) (s2:SignA) : Signs =
-    ASigns(
+    map_to_generic_asigns(
         Set.ofList (
             match (s1,s2) with
             | (MINUS, MINUS) -> [PLUS]
@@ -63,45 +68,42 @@ let sign_times (s1:SignA) (s2:SignA) : Signs =
             | (PLUS, MINUS) -> [MINUS]
             | (PLUS, ZERO) -> [ZERO]
             | (PLUS, PLUS) -> [PLUS] 
-            | _ -> failwith "does not expect boolean signs in arithmetic comparisions"
     ))
 
 let sign_divide (s1:SignA) (s2:SignA) : Signs =
-    ASigns(
+    map_to_generic_asigns(
         Set.ofList (
             match (s1,s2) with
             | (MINUS, MINUS) -> [PLUS]
-            | (MINUS, ZERO) -> []
+            | (MINUS, ZERO) -> failwith "Cannot divide by zero"
             | (MINUS, PLUS) -> [MINUS]
             | (ZERO, MINUS) -> [ZERO]
-            | (ZERO, ZERO) -> []
+            | (ZERO, ZERO) -> failwith "Cannot divide by zero"
             | (ZERO, PLUS) -> [ZERO] 
             | (PLUS, MINUS) -> [MINUS]
-            | (PLUS, ZERO) -> []
+            | (PLUS, ZERO) -> failwith "Cannot divide by zero"
             | (PLUS, PLUS) -> [PLUS] 
-            | _ -> failwith "does not expect boolean signs in arithmetic comparisions"
     ))
 
 let sign_pow (s1:SignA) (s2:SignA) : Signs =
-    ASigns(
+    map_to_generic_asigns(
         Set.ofList (
             match (s1,s2) with
             | (MINUS, MINUS) -> [MINUS]
             | (MINUS, ZERO) -> [MINUS]
             | (MINUS, PLUS) -> [MINUS]
-            | (ZERO, MINUS) -> []
+            | (ZERO, MINUS) -> failwith "zero to the power of anything minus, is the same as dividing by 0. No good."
             | (ZERO, ZERO) -> [PLUS]
             | (ZERO, PLUS) ->[ZERO] 
             | (PLUS, MINUS) -> [PLUS]
             | (PLUS, ZERO) -> [PLUS]
             | (PLUS, PLUS) -> [PLUS] 
-            | _ -> failwith "does not expect boolean signs in arithmetic comparisions"
     ))
 
 // SIGN BOOLEAN ANALYSIS
 
 let sign_equals (s1:SignA) (s2:SignA) : Signs = // =
-    BSigns(
+    map_to_generic_bsigns(
         Set.ofList (
             match (s1,s2) with
             | (MINUS, MINUS) -> [TT; FF]
@@ -115,25 +117,24 @@ let sign_equals (s1:SignA) (s2:SignA) : Signs = // =
             | (PLUS, PLUS) -> [TT;FF] 
     ))
 
-let sign_gt (s1:SignA) (s2:SignA) : Signs = // GT (NOT DONE)
-    BSigns( 
+let sign_gt (s1:SignA) (s2:SignA) : Signs = // GT
+    map_to_generic_bsigns( 
         Set.ofList (
             match (s1,s2) with
             | (MINUS, MINUS) -> [TT; FF]
-            | (MINUS, ZERO) -> [TT]
-            | (MINUS, PLUS) -> [TT]
-            | (ZERO, MINUS) -> [FF]
-            | (ZERO, ZERO) -> [TT]
-            | (ZERO, PLUS) -> [TT] 
-            | (PLUS, MINUS) -> [FF]
-            | (PLUS, ZERO) -> [FF]
+            | (MINUS, ZERO) -> [FF]
+            | (MINUS, PLUS) -> [FF]
+            | (ZERO, MINUS) -> [TT]
+            | (ZERO, ZERO) -> [FF]
+            | (ZERO, PLUS) -> [FF] 
+            | (PLUS, MINUS) -> [TT]
+            | (PLUS, ZERO) -> [TT]
             | (PLUS, PLUS) -> [TT;FF] 
-            | _ -> failwith "does not expect boolean signs in arithmetic comparisions"
     ))
 
 
 let sign_gte (s1:SignA) (s2:SignA) : Signs = // GTE
-    BSigns(
+    map_to_generic_bsigns(
         Set.ofList (
             match (s1,s2) with
             | (MINUS, MINUS) -> [TT; FF]
@@ -145,18 +146,31 @@ let sign_gte (s1:SignA) (s2:SignA) : Signs = // GTE
             | (PLUS, MINUS) -> [FF]
             | (PLUS, ZERO) -> [FF]
             | (PLUS, PLUS) -> [TT;FF] 
-            | _ -> failwith "does not expect boolean signs in arithmetic comparisions"
     ))
 
 let sign_conjunction (s1:SignB) (s2:SignB) : Signs = // AND
-    BSigns(
+    map_to_generic_bsigns(
         Set.ofList (
             match (s1,s2) with
             | (TT, TT) ->  [TT]
             | (TT, FF) -> [FF]
             | (FF, TT) -> [FF]
             | (FF, FF) -> [TT]
-            | _ -> failwith "does not expect arithmetic signs in arithmetic comparisions"
     ))
+
+let sign_disjunction (s1:SignB) (s2:SignB) : Signs = // OR
+    map_to_generic_bsigns(
+        Set.ofList (
+            match (s1,s2) with
+            | (TT, TT) ->  [TT]
+            | (TT, FF) -> [TT]
+            | (FF, TT) -> [TT]
+            | (FF, FF) -> [FF]
+    ))
+
+let sign_negate (s:SignB) : SignB =
+    match (s) with
+    | TT ->  FF
+    | FF -> TT
 
     

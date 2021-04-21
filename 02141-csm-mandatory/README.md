@@ -15,6 +15,8 @@
 - PGPrinter : Contains code to format program graph to string and graphiz format.
 - PGEvaluator : Contains code for evaluating expressions such as arithmetic expressions or boolean expressions, also command expressions etc.
 - PGInterpreter : Contains code for interpreting and running a program given a parsed program graph and initial memory.
+- SignEvaluator : Contains code for evaluating abstract signs for arithmetic and boolean expressions
+- SignAnalyser : Contains code for sign analysis
 
 ## Parse a GCL program with application.
 - Have the GCL program in a file ending in ".gcl"
@@ -28,7 +30,10 @@ Parsing a GCL program will generate a file with the same name but with a ".ast" 
 ## Program Graph
 Parsing a GCL program will generate a file with the same name but with a ".gv" file extension. This file contains the program graph in graphviz format.
 
-## Interprete program (With stepwise execution)'
+## Interprete program (With stepwise execution)
 - Have a program which can be parsed (see Parse a GCL program section)
 - Have initial memory file ending in ".mem" with the same name as the program being parsed and intepreted.
 - Parse a program will also interprete and print execution report and step wise execution.
+
+## Sign analysis:
+- The program will print the sign analysis based on the the abstract memory derived from initial memory.

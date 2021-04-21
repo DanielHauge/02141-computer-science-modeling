@@ -10,6 +10,7 @@ open PGCompiler
 open PGPrinter
 open PGEvaluator
 open PGIntepreter
+open SignAnalyser
 
 
 [<EntryPoint>]
@@ -66,6 +67,8 @@ let main argv =
     printfn "Status: %A\nNode: %s\nLast action:%s\nFinal Memory:%s\n\n" status (print_node node) (match ast with | Some(a) -> print_ast_expression a | None -> "N/A") (Newtonsoft.Json.JsonConvert.SerializeObject mem)
     Seq.iter (fun es-> printfn "%s" (print_execution_step es) ) (List.rev executionSteps)
 
+    let signAnalysis = sign_analyse_pg_mem initMem pg
+    Seq.iter (fun line -> (printfn "%s" line)) (print_sign_analysis (Map.toList signAnalysis))
 
     Console.ReadLine()
 
