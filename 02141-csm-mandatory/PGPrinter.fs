@@ -64,7 +64,7 @@ let print_node (node:Node) : string =
     | F(f) -> f
 
 let print_edge (edge:Edge) =
-    let (a, ast, b) = edge
+    let (a, ast, b, _) = edge
     sprintf "q%s -> q%s [%s]" (print_node a) (print_node b) (print_ast_expression ast)
 
 
@@ -76,7 +76,7 @@ let rec print_program_graph (edges:ProgramGraph) : string list =
 
 
 let format_edge_graphiz (edge:Edge) = 
-    let (a, ast, b) = edge
+    let (a, ast, b, _) = edge
     sprintf "q%s -> q%s [label= \"%s\"];" (print_node a) (print_node b) (print_ast_expression ast)
 
 let format_program_graph_graphiz (edges:ProgramGraph) : string =

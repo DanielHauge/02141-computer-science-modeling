@@ -2,9 +2,7 @@
 open AST
 open PGCompiler
 
-type Var = string
-type Mem = Map<Var,int>
-type PGMemory = Mem
+
 
 
 // Actual computational evaluation. Based on semanthics (very trivial, + should plus values together and times should times etc.)

@@ -4,16 +4,8 @@ open PGCompiler
 open PGEvaluator
 open SignEvaluator
 open PGPrinter
+open Auxliary
 
-let rec pairwise a b =
-    let rec makePairsForRow c l =
-        match l with
-        | [] -> []
-        | head::tail -> (c,head)::(makePairsForRow c tail)
-
-    match a with
-    | [] -> []
-    | head::tail -> makePairsForRow head b@(pairwise tail b)
 
 
 
@@ -112,11 +104,11 @@ let merge_abstract_mem (m1:AbstractMem) (m2:AbstractMem) : AbstractMem =
 
 let rec sign_analyse_pg (mem:AbstractMem) (pg:ProgramGraph) (acc:SignAnalysis) : SignAnalysis =
     match pg with
-    | (e1, ast, e2)::tail -> let newAbstractmem = analyse_edge mem ast
-                             let analysis = sign_analyse_pg newAbstractmem tail acc
-                             match (analysis.TryFind e2) with 
-                             | Some v -> analysis.Remove(e2).Add(e2, merge_abstract_mem newAbstractmem v)
-                             | None -> analysis.Add(e2, newAbstractmem)
+    | (e1, ast, e2, _)::tail ->  let newAbstractmem = analyse_edge mem ast
+                                 let analysis = sign_analyse_pg newAbstractmem tail acc
+                                 match (analysis.TryFind e2) with 
+                                 | Some v -> analysis.Remove(e2).Add(e2, merge_abstract_mem newAbstractmem v)
+                                 | None -> analysis.Add(e2, newAbstractmem)
     | _ -> acc
 
 

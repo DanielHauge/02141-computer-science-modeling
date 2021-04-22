@@ -52,3 +52,14 @@ type AST =
     | B of bools
     | C of cmd
     | GC of guardedcmd
+
+
+    
+type Var = string
+type Flow = Var*Var
+type Node = I of int | F of string
+type Edge = Node*AST*Node*Set<Var>
+type ProgramGraph = Edge list
+type SecurityFlows = Set<Flow>
+type Mem = Map<Var,int>
+type PGMemory = Mem

@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Auxilary.fs" />
     <Compile Include="AST.fs" />
+    <Compile Include="Security.fs" />
     <Compile Include="PGCompiler.fs" />
     <Compile Include="PGPrinter.fs" />
     <Compile Include="ASTPrettyPrinter.fs" />

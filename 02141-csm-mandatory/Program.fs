@@ -11,6 +11,7 @@ open PGPrinter
 open PGEvaluator
 open PGIntepreter
 open SignAnalyser
+open Security
 
 
 [<EntryPoint>]
@@ -69,6 +70,11 @@ let main argv =
 
     let signAnalysis = sign_analyse_pg_mem initMem pg
     Seq.iter (fun line -> (printfn "%s" line)) (print_sign_analysis (Map.toList signAnalysis))
+
+    printfn "\nSecurity analysis:"
+
+
+
 
     Console.ReadLine()
 
