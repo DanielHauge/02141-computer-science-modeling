@@ -9,11 +9,12 @@
   <ItemGroup>
     <Compile Include="Auxilary.fs" />
     <Compile Include="AST.fs" />
+    <Compile Include="SecurityInit.fs" />
     <Compile Include="Security.fs" />
     <Compile Include="PGCompiler.fs" />
+    <Compile Include="PGEvaluator.fs" />
     <Compile Include="PGPrinter.fs" />
     <Compile Include="ASTPrettyPrinter.fs" />
-    <Compile Include="PGEvaluator.fs" />
     <Compile Include="PGIntepreter.fs" />
     <Compile Include="SignEvaluator.fs" />
     <Compile Include="SignAnalyser.fs" />

@@ -1,0 +1,14 @@
+Actual flows:
+x -> z
+y -> z
+Allowed flows:
+x -> x
+x -> y
+x -> z
+y -> x
+y -> y
+y -> z
+z -> x
+z -> y
+z -> z
+Violated flows:

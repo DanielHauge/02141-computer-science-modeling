@@ -79,4 +79,20 @@ let rec sec (n1:Node) (n2:Node) (ast:AST) (implicitFlows:Set<Var>) : SecurityFlo
     match ast with
     | C(cmd) -> sec_cmd cmd implicitFlows
     | GC(gcmd) -> fst (sec_gcmd gcmd False implicitFlows)
+    | B(bool) -> Set.empty
     | _ -> failwith "That doesn't make sense"
+
+
+let rec security_analysis (pg:ProgramGraph) : SecurityFlows =
+    match pg with
+    | [] -> Set.empty
+    | (n1,ast,n2, implicit)::tail -> Set.union (sec n1 n2 ast implicit) (security_analysis tail)
+
+let format_security_flows (flows:SecurityFlows) : string =
+    let elems = Set.toList flows
+    let rec format_edges (edges:Flow list) : string =
+        match edges with
+        | (a,b)::tail -> sprintf "%s -> %s\n%s" a b (format_edges tail)
+        | _ -> ""
+
+    (format_edges elems)

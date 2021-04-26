@@ -2,10 +2,8 @@ digraph program_graph {rankdir=LR;
 node [shape = circle]; q0;
 node [shape = doublecircle]; q#;
 node [shape = circle]
-q0 -> q1 [label= "(x<0)&(!(false))"];
-q1 -> q# [label= "y:=-1*z*z"];
-q0 -> q2 [label= "(x=0)&(!((false)|(x<0)))"];
-q2 -> q# [label= "y:=0"];
-q0 -> q3 [label= "(x>0)&(!(((false)|(x<0))|(x=0)))"];
-q3 -> q# [label= "y:=z*z"];
+q0 -> q1 [label= "(x>=y)&(!(false))"];
+q1 -> q# [label= "z:=x"];
+q0 -> q2 [label= "(y>x)&(!((false)|(x>=y)))"];
+q2 -> q# [label= "z:=y"];
 }

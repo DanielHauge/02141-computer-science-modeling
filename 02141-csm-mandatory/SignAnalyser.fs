@@ -125,17 +125,18 @@ let print_abstract_sign (s:Sign) : string =
     | ASign(ZERO) -> "0"
     | ASign(MINUS) -> "-"
 
-let print_abstract_signs (s:Signs) : string = Seq.reduce (fun a b -> a + ", " +  b) (Seq.map (fun v -> print_abstract_sign v) s)
+let print_abstract_signs (s:Signs) : string = if s.IsEmpty then "empty" else Seq.reduce (fun a b -> a + ", " +  b) (Seq.map (fun v -> print_abstract_sign v) s)
 
 let print_abstract_var (v:Var) (s:Signs) : string = sprintf "%s : {%s}" v (print_abstract_signs s)
 
 let print_abstract_memory (n:Node) (mem:AbstractMem) : string =
     let signsString = if mem.Count > 0 then (Seq.reduce (fun a b -> a + " | " +  b) (Seq.map (fun (k,v) -> print_abstract_var k v) (Map.toSeq mem))) else "empty"
-    sprintf "q%s - (%s)"  (print_node n) signsString
+    sprintf "q%s - (%s)\n"  (print_node n) signsString
 
-let rec print_sign_analysis (a:(Node*AbstractMem) list) : string list =
+let rec print_sign_analysis (a:(Node*AbstractMem) list) : string =
     match a with
-    | (node, mem)::tail -> print_abstract_memory node mem::print_sign_analysis tail
-    | _ -> []
+    | (node, mem)::tail -> (print_abstract_memory node mem) + (print_sign_analysis tail)
+    | _ -> ""
+
 
     
