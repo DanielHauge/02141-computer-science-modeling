@@ -19,6 +19,7 @@
 - SignAnalyser.fs : Contains code for sign analysis
 - Security.fs : Contains code for analysing actual security flows.
 - SecurityInit.fs : Contains code for security policy setup and allowed security flows and violations.
+- TrasitionSystem.fs : Contains code for the model checker feature.
 
 ## Parse a GCL program with application.
 - Have the GCL program in a file ending in ".gcl"
@@ -53,3 +54,6 @@
 }
 ```
 - The security analysis can be found in the file ending in ".sa" after parsing.
+
+## Model checker:
+- Not fully implemented, before deadline. Partial implementation can be found in TransitionSystem.fs
