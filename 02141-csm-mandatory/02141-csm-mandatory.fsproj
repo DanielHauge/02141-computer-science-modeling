@@ -14,6 +14,7 @@
     <Compile Include="PGCompiler.fs" />
     <Compile Include="PGEvaluator.fs" />
     <Compile Include="PGPrinter.fs" />
+    <Compile Include="TransitionSystem.fs" />
     <Compile Include="ASTPrettyPrinter.fs" />
     <Compile Include="PGIntepreter.fs" />
     <Compile Include="SignEvaluator.fs" />
